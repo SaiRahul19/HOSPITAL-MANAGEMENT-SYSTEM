@@ -1,9 +1,9 @@
-# CODETECH---Task-1
-**Name** : Gogikar Sai Rahul
-**Company** : CODETECH IT SOLUTIONS
-**ID** : CT6WDS899
-**Domain** : JAVA PROGRAMMING
-**Duration** : JULY 5th,2024 to AUGUST 20th,2024
+# CODETECH---Task-1 
+**Name** : Gogikar Sai Rahul 
+**Company** : CODETECH IT SOLUTIONS 
+**ID** : CT6WDS899 
+**Domain** : JAVA PROGRAMMING 
+**Duration** : JULY 5th,2024 to AUGUST 20th,2024 
 
 ## Overview of the Project
 
