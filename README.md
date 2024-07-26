@@ -14,6 +14,9 @@
 
 ### Project : Hospital Management System
 
+![Screenshot 2024-07-26 123129](https://github.com/user-attachments/assets/7420a287-f30e-4270-96b8-5dd995f1b7c3)
+
+
 
 
 This Java-based Hospital Management System is designed to efficiently handle various aspects of hospital operations. The system includes the following key modules:
