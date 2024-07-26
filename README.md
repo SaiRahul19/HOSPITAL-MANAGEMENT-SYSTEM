@@ -12,23 +12,35 @@
 
 ## Overview of the Project
 
-### Project : Hospital Management System
-                                 THIS IS HOW THE LOGIN PAGE LOOKS  
-![Screenshot 2024-07-26 123129](https://github.com/user-attachments/assets/7420a287-f30e-4270-96b8-5dd995f1b7c3)
-                                   THIS IS THE SIGNUP SECTION  
-![image](https://github.com/user-attachments/assets/244ffa30-d31d-4cff-9faf-c40fb639632e)
+## Project: Hospital Management System
 
-                     THIS IS HOW THE HOME PAGE OF THE HOSPITAL MANAGEMENT SYSTEM LOOKS  
-![Screenshot 2024-07-26 123217](https://github.com/user-attachments/assets/63ab418e-5797-4dc3-a14a-a2ef46ff5c9d)  
-                              THIS IS THE PATIENT REGISTRATION SECTION  
-![image](https://github.com/user-attachments/assets/b0586059-1edf-4f1b-bcd4-4c3727a4cc31)
-                            THIS IS ELECTRONIC HEALTH RECORDS SECTION           
-![Screenshot 2024-07-26 123304](https://github.com/user-attachments/assets/0c5288cc-4b57-4739-842e-31ccfa9d34c7)
-                               THIS IS BILLING AND INVOICE SECTION  
-![Screenshot 2024-07-26 123334](https://github.com/user-attachments/assets/5470d32c-23da-485c-9f50-b6f985c5174d)  
-                               THIS IS INVENTORY MANAGEMENT SECTION  
-![Screenshot 2024-07-26 123415](https://github.com/user-attachments/assets/e810a59a-bc2d-495c-a00b-bb5a8951b1be)
+### Login Page
+This is how the login page looks:
+![Login Page](https://github.com/user-attachments/assets/7420a287-f30e-4270-96b8-5dd995f1b7c3)
 
+### Signup Section
+This is the signup section:
+![Signup Section](https://github.com/user-attachments/assets/244ffa30-d31d-4cff-9faf-c40fb639632e)
+
+### Home Page
+This is how the home page of the Hospital Management System looks:
+![Home Page](https://github.com/user-attachments/assets/63ab418e-5797-4dc3-a14a-a2ef46ff5c9d)
+
+### Patient Registration Section
+This is the patient registration section:
+![Patient Registration](https://github.com/user-attachments/assets/b0586059-1edf-4f1b-bcd4-4c3727a4cc31)
+
+### Electronic Health Records Section
+This is the electronic health records section:
+![Electronic Health Records](https://github.com/user-attachments/assets/0c5288cc-4b57-4739-842e-31ccfa9d34c7)
+
+### Billing and Invoice Section
+This is the billing and invoice section:
+![Billing and Invoice](https://github.com/user-attachments/assets/5470d32c-23da-485c-9f50-b6f985c5174d)
+
+### Inventory Management Section
+This is the inventory management section:
+![Inventory Management](https://github.com/user-attachments/assets/e810a59a-bc2d-495c-a00b-bb5a8951b1be)
 
 
 
