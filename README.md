@@ -13,8 +13,9 @@
 ## Overview of the Project
 
 ### Project : Hospital Management System
-
+THIS IS HOW THE LOGIN PAGE LOOKS
 ![Screenshot 2024-07-26 123129](https://github.com/user-attachments/assets/7420a287-f30e-4270-96b8-5dd995f1b7c3)
+THIS IS HOW THE HOME PAGE OF THE HOSPITAL MANAGEMENT SYSTEM LOOKS
 ![Screenshot 2024-07-26 123217](https://github.com/user-attachments/assets/63ab418e-5797-4dc3-a14a-a2ef46ff5c9d)  
 ![Screenshot 2024-07-26 123236](https://github.com/user-attachments/assets/9dce2ae6-f043-4f74-b982-d8e5a60dd10a)
 ![Screenshot 2024-07-26 123304](https://github.com/user-attachments/assets/0c5288cc-4b57-4739-842e-31ccfa9d34c7)
