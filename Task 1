@@ -1,0 +1,1462 @@
+/*  */
+
+package hospitalmanagementlogin;
+import javafx.scene.layout.*;
+import java.sql.*;
+import javafx.scene.control.*;
+import java.io.FileInputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.*;
+
+public class HospitalManagementLogin extends Application {
+    int count;
+    sql s1;
+    @Override
+    public void start(Stage stage) throws Exception {
+        s1 = new sql();
+        count = s1.maxID();
+        Button signup = new Button("SignUp");
+
+        signup.setOnAction(e -> {
+    // Labels for user inputs
+           Label signUser = new Label("Enter Username: ");
+           Label signPass = new Label("Enter Password: ");
+           Label confsignPass = new Label("Confirm Password: ");
+
+    // TextFields for input
+    TextField userSign = new TextField();
+    TextField passUser = new TextField(); 
+    TextField cpassUser = new TextField(); 
+
+    // Button to submit the registration form
+    Button submit = new Button("Submit");
+    
+
+    // Layout for the registration form
+    HBox bh1 = new HBox(signUser, userSign);
+    bh1.setSpacing(10);
+    bh1.setAlignment(Pos.CENTER);
+
+    HBox bh2 = new HBox(signPass, passUser);
+    bh2.setSpacing(10);
+    bh2.setAlignment(Pos.CENTER);
+
+    HBox bh3 = new HBox(confsignPass, cpassUser);
+    bh3.setSpacing(10);
+    bh3.setAlignment(Pos.CENTER);
+
+    HBox bh4 = new HBox(submit);
+    bh4.setSpacing(10);
+    bh4.setAlignment(Pos.CENTER);
+
+    VBox bv1 = new VBox(bh1, bh2, bh3, bh4);
+    bv1.setSpacing(10);
+    bv1.setAlignment(Pos.CENTER);
+
+    // Create and set the scene for the signup page
+    Scene signUpScene = new Scene(bv1);
+    stage.setScene(signUpScene);
+    stage.setTitle("SignUp Page");
+    stage.show();
+    stage.setMaximized(true); // This line makes the window maximized
+     });
+
+
+
+        Scene loginScene = createLoginScene(stage);
+        stage.setTitle("Hospital Management");
+        stage.setScene(loginScene);
+        stage.show();
+        stage.setMaximized(true); // This line makes the window maximized
+    }
+
+    private Scene createLoginScene(Stage stage) {
+        
+    Font f = new Font("Segoe UI", 40);
+    Text t = new Text("PLEASE ENTER YOUR CREDENTIALS");    
+    // Labels
+    Label username = new Label("Username : ");
+    Label password = new Label("Password : ");
+
+    // TextFields
+    TextField uname = new TextField();
+    PasswordField pass = new PasswordField();
+    TextField passVisible = new TextField();
+    passVisible.setManaged(false); // Initially hidden
+    passVisible.setVisible(false);
+
+    // Sync the visible and hidden password fields
+    pass.textProperty().bindBidirectional(passVisible.textProperty());
+
+    // Eye button to toggle password visibility
+    Button toggleVisibility = new Button();
+
+try {
+    // Load the eye icon image from the specified path
+    Image eyeIcon = new Image(new FileInputStream("images/eye.jpg"));
+    ImageView eyeView = new ImageView(eyeIcon);
+    eyeView.setFitHeight(20);
+    eyeView.setFitWidth(20);
+    toggleVisibility.setGraphic(eyeView);
+} catch (Exception ex) {
+    // Handle the case where the image file is not found
+    ex.printStackTrace();
+}
+
+// Toggle between showing and hiding the password
+toggleVisibility.setOnAction(e -> {
+    if (pass.isVisible()) {
+        // Hide the password
+        pass.setVisible(false);
+        pass.setManaged(false);
+        passVisible.setVisible(true);
+        passVisible.setManaged(true);
+    } else {
+        // Show the password
+        pass.setVisible(true);
+        pass.setManaged(true);
+        passVisible.setVisible(false);
+        passVisible.setManaged(false);
+    }
+});
+
+    // Layout for username and password fields with the toggle button
+    HBox h1 = new HBox(username, uname);
+    h1.setSpacing(10);
+    h1.setAlignment(Pos.CENTER);
+
+    HBox h2 = new HBox(password, pass, passVisible, toggleVisibility);
+    h2.setSpacing(10);
+    h2.setAlignment(Pos.CENTER);
+    h2.setPadding(new Insets(0,0,0,50));
+
+    // Login and Signup buttons
+    Button login = new Button("Login");
+    login.setOnAction(e2 -> {
+        Alert a;
+        try {
+            String user = uname.getText();
+            String pwd = pass.getText();
+            if (user == null || user.isEmpty() || pwd == null || pwd.isEmpty()) {
+                a = new Alert(Alert.AlertType.ERROR, "Field(s) are blank");
+                a.show();
+            } else if (s1.loginCheck(user, pwd)) {
+                stage.setScene(mainMenu(stage));
+            } else {
+                a = new Alert(Alert.AlertType.ERROR, "Credentials don't match. Please enter the correct details.");
+                a.show();
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(HospitalManagementLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    });
+
+    Button signup = new Button("SignUp");
+    signup.setOnAction(e -> {
+    // Labels for user inputs
+           Label signUser = new Label("Enter Username: ");
+           Label signPass = new Label("Enter Password: ");
+           Label confsignPass = new Label("Confirm Password: ");
+
+    // TextFields for input
+    TextField userSign = new TextField();
+    TextField passUser = new TextField(); 
+    TextField cpassUser = new TextField(); 
+
+    // Button to submit the registration form
+    Button submit = new Button("Submit");
+    submit.setOnAction(e1 -> {
+        String newUsername = userSign.getText();
+        String newPassword = passUser.getText();
+        String confirmPassword = cpassUser.getText();
+
+        if (newUsername == null || newUsername.isEmpty() || newPassword == null || newPassword.isEmpty()) {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Field(s) are blank");
+            a.show();
+        } else if (!newPassword.equals(confirmPassword)) {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Passwords don't match");
+            a.show();
+        } else {
+            try {
+                // Assuming 'sql' is a class handling database operations
+                s1 = new sql();
+                s1.login(newUsername, newPassword); // Replace 'login' with 'register' if appropriat
+                    Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Registered Successfully");
+                    a.show();
+                    stage.setScene(createLoginScene(stage)); // Return to login scene after successful registration
+            } catch (Exception ex) {
+                Logger.getLogger(HospitalManagementLogin.class.getName()).log(Level.SEVERE, null, ex);
+                Alert a = new Alert(Alert.AlertType.ERROR, "An error occurred while registering.");
+                a.show();
+            }
+        }
+    });
+    
+    
+    
+    
+
+    // Layout for the registration form
+    HBox bh1 = new HBox(signUser, userSign);
+    bh1.setSpacing(10);
+    bh1.setAlignment(Pos.CENTER);
+
+    HBox bh2 = new HBox(signPass, passUser);
+    bh2.setSpacing(10);
+    bh2.setAlignment(Pos.CENTER);
+
+    HBox bh3 = new HBox(confsignPass, cpassUser);
+    bh3.setSpacing(10);
+    bh3.setAlignment(Pos.CENTER);
+
+    HBox bh4 = new HBox(submit);
+    bh4.setSpacing(10);
+    bh4.setAlignment(Pos.CENTER);
+
+    VBox bv1 = new VBox(bh1, bh2, bh3, bh4);
+    bv1.setSpacing(10);
+    bv1.setAlignment(Pos.CENTER);
+
+    // Create and set the scene for the signup page
+    Scene signUpScene = new Scene(bv1);
+    stage.setScene(signUpScene);
+    stage.setTitle("SignUp Page");
+    stage.show();
+    stage.setMaximized(true); // This line makes the window maximized
+     });
+    
+
+    HBox h3 = new HBox(login);
+    h3.setAlignment(Pos.CENTER);
+
+    HBox h4 = new HBox(signup);
+    h4.setAlignment(Pos.CENTER);
+    
+    HBox h5 = new HBox(t);
+    h5.setAlignment(Pos.TOP_CENTER);
+
+    // Root layout
+    VBox root = new VBox(h5,h1, h2, h3, h4);
+    root.setSpacing(5);
+    root.setPadding(new Insets(125, 0, 0, 0));
+    root.setAlignment(Pos.CENTER);
+
+    return new Scene(root);
+}
+    
+   private Scene mainMenu(Stage stage) throws Exception {
+    Font f = new Font("Segoe UI", 25);
+    BorderPane contentArea = new BorderPane();
+    
+
+    Button b1 = new Button("Patient Registration");b1.setFont(f);b1.setPrefWidth(500);
+    b1.setOnAction(b1e->{
+        contentArea.setCenter(patientRegistration());
+    });
+    
+    
+    Button b2 = new Button("Appointment Scheduling");b2.setFont(f);b2.setPrefWidth(500);
+    b2.setOnAction(b2e->{
+        contentArea.setCenter(appointmentScheduling());
+    });
+    
+   
+    Button b3 = new Button("Electronic Health Records");b3.setFont(f);b3.setPrefWidth(500);
+    b3.setOnAction(b3e->{
+        contentArea.setCenter(electronicHealthRecords());
+    });
+    
+    Button b4 = new Button("Billing and Invoice");b4.setFont(f);b4.setPrefWidth(500);
+    b4.setOnAction(b4e->{
+        contentArea.setCenter(billingAndInvoice());
+    });
+    
+    Button b5 = new Button("Inventory Management");b5.setFont(f);b5.setPrefWidth(500);
+    b5.setOnAction(b5e->{
+        contentArea.setCenter(inventoryManagement());
+    });
+
+    VBox sideBar = new VBox();
+    sideBar.getChildren().addAll(b1, b2, b3, b4, b5);
+    sideBar.setSpacing(30);
+    sideBar.setPadding(new Insets(150, 0, 0, 0));
+
+    
+    Text defaul = new Text("Hello! "+s1.returnUsername().replaceAll("[0-9]", "").toUpperCase());
+    Font f10 = new Font("Segoe UI", 50);
+    defaul.setFont(f10);
+    defaul.setFill(Color.GOLD);
+
+//    BorderPane contentArea = new BorderPane();
+    contentArea.setCenter(defaul);
+    contentArea.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+    contentArea.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
+
+    
+
+    Font f1 = new Font("Helvetica", 40);
+    Label head = new Label("WELCOME TO HOSPITAL MANAGEMENT PORTAL");
+    head.setFont(f1);
+    head.setTextFill(Color.BLACK);
+
+    HBox scrollingText = new HBox();
+    scrollingText.getChildren().add(head);
+    scrollingText.setPadding(new Insets(5, 0, 0, 10));
+
+    BorderPane headd = new BorderPane();
+    headd.setTop(scrollingText);
+    headd.setLeft(sideBar);
+    headd.setCenter(contentArea);
+
+    ImageView mainMenuImg = new ImageView(new Image(new FileInputStream("images/hospital.jpg")));
+    mainMenuImg.setFitWidth(stage.getWidth());  // Set fit width
+    mainMenuImg.setFitHeight(stage.getHeight()); // Set fit height
+    mainMenuImg.setPreserveRatio(false); // Allow stretching
+
+    StackPane root = new StackPane();
+    root.getChildren().addAll(mainMenuImg, headd);
+
+    // Create a Timeline to animate the Label
+    Timeline timeline = new Timeline(new KeyFrame(
+        Duration.millis(20), // Update every 20 milliseconds
+        event -> {
+            double labelWidth = head.getBoundsInLocal().getWidth();
+            double containerWidth = root.getWidth();
+            double currentX = head.getTranslateX();
+            double newX = currentX - 2; // Move left by 2 pixels
+
+            if (newX + labelWidth < 0) {
+                newX = containerWidth; // Reset to the right side
+            }
+
+            head.setTranslateX(newX);
+        }
+    ));
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.play();
+
+    // Glitter effect animation
+    Timeline glitterTimeline = new Timeline(
+        new KeyFrame(Duration.seconds(0.1), e -> head.setTextFill(Color.web("#FF0000"))),
+        new KeyFrame(Duration.seconds(0.4), e -> head.setTextFill(Color.web("#FFFFFF"))),
+        new KeyFrame(Duration.seconds(0.7), e -> head.setTextFill(Color.web("#D3D3D3")))    
+    );
+    glitterTimeline.setCycleCount(Animation.INDEFINITE);
+    glitterTimeline.play();
+
+    return new Scene(root); // Set initial scene dimensions or adjust as needed
+}
+   
+   private Node patientRegistration() {
+    Font f1 = new Font("Helvetica", 20);
+    Font f = new Font("Times New Roman", 14);
+    
+    // Headings
+    Text heading1 = new Text("PERSONAL INFORMATION");
+    heading1.setFont(f1);
+    heading1.setUnderline(true);
+    heading1.setFill(Color.BLACK);
+    
+    Text heading2 = new Text("CONTACT INFORMATION");
+    heading2.setFont(f1);
+    heading2.setUnderline(true);
+    heading2.setFill(Color.BLACK);
+    
+    Text heading3 = new Text("ADDRESS");
+    heading3.setFont(f1);
+    heading3.setUnderline(true);
+    heading3.setFill(Color.BLACK);
+    
+    Text heading4 = new Text("MEDICAL INFORMATION");
+    heading4.setFont(f1);
+    heading4.setUnderline(true);
+    heading4.setFill(Color.BLACK);
+    
+    Text heading5 = new Text("INSURANCE INFORMATION");
+    heading5.setFont(f1);
+    heading5.setUnderline(true);
+    heading5.setFill(Color.BLACK);
+    
+    // Labels
+    Label pname = new Label("Patient name : ");
+    pname.setFont(f);
+    
+    Label pDob = new Label("Date of Birth : ");
+    pDob.setFont(f);
+    
+    Label pgen = new Label("Gender : ");
+    pgen.setFont(f);
+    
+    Label pphon = new Label("Phone Number : ");
+    pphon.setFont(f);
+    
+    Label pmail = new Label("Email Address : ");
+    pmail.setFont(f);
+    
+    Label pHno = new Label("House No : ");
+    pHno.setFont(f);
+    
+    Label pState = new Label("State : ");
+    pState.setFont(f);
+    
+    Label pCount = new Label("Country : ");
+    pCount.setFont(f);
+    
+    Label pMedHis = new Label("Medical History : ");
+    pMedHis.setFont(f);
+    
+    Label pIns = new Label("Insurance Provider : ");
+    pIns.setFont(f);
+    
+    Label pInsNum = new Label("Insurance Policy Number : ");
+    pInsNum.setFont(f);
+    
+    // Form Fields
+    TextField patientName = new TextField();
+    DatePicker dateBirth = new DatePicker();
+    ChoiceBox<String> gender = new ChoiceBox<>();
+    gender.getItems().addAll("Male", "Female", "Other");
+    TextField phoneNumber = new TextField();
+    TextField email = new TextField();
+    TextArea houseNo = new TextArea();
+    houseNo.setPrefRowCount(2);
+    TextField state = new TextField();
+    TextField country = new TextField();
+    TextArea medicalHistory = new TextArea();
+    medicalHistory.setPrefRowCount(2);
+    TextField insuranceProvider = new TextField();
+    TextField insuranceNumber = new TextField();
+    Button submit = new Button("Submit");
+    submit.setOnAction(b1e->{
+        try{
+        sql s1 = new sql();
+        count++;
+        DateTimeFormatter formatt = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        String date = (dateBirth.getValue()).format(formatt);
+        s1.register(count,patientName.getText(),date,gender.getValue(),phoneNumber.getText(),email.getText(),houseNo.getText(),
+                state.getText(),country.getText(),medicalHistory.getText(),insuranceProvider.getText(),insuranceNumber.getText());
+        Alert a = new Alert(Alert.AlertType.INFORMATION, "Registered Successfully");
+        a.show();
+        patientName.setText("");dateBirth.setValue(null);gender.setValue("");phoneNumber.setText("");email.setText("");
+        houseNo.setText("");state.setText("");country.setText("");medicalHistory.setText("");insuranceProvider.setText("");insuranceNumber.setText("");
+        }
+        catch(Exception e){
+            System.out.println(e);};
+    });
+    
+    // Layouts
+    GridPane gp = new GridPane();
+    gp.add(heading1, 0, 0, 2, 1);
+    gp.add(pname, 0, 1);
+    gp.add(patientName, 1, 1);
+    gp.add(pDob, 0, 2);
+    gp.add(dateBirth, 1, 2);
+    gp.add(pgen, 0, 3);
+    gp.add(gender, 1, 3);
+    
+    gp.add(heading2, 0, 4, 2, 1);
+    gp.add(pphon, 0, 5);
+    gp.add(phoneNumber, 1, 5);
+    gp.add(pmail, 0, 6);
+    gp.add(email, 1, 6);
+    
+    gp.add(heading3, 0, 7, 2, 1);
+    gp.add(pHno, 0, 8);
+    gp.add(houseNo, 1, 8);
+    gp.add(pState, 0, 9);
+    gp.add(state, 1, 9);
+    gp.add(pCount, 0, 10);
+    gp.add(country, 1, 10);
+    
+    gp.add(heading4, 0, 11, 2, 1);
+    gp.add(pMedHis, 0, 12);
+    gp.add(medicalHistory, 1, 12);
+    
+    gp.add(heading5, 0, 13, 2, 1);
+    gp.add(pIns, 0, 14);
+    gp.add(insuranceProvider, 1, 14);
+    gp.add(pInsNum, 0, 15);
+    gp.add(insuranceNumber, 1, 15);
+    
+    VBox v1 = new VBox();
+    v1.getChildren().addAll(gp, submit);
+    v1.setSpacing(15);
+    v1.setPadding(new Insets(0, 0, 0, 100));
+    v1.setAlignment(Pos.CENTER);
+    
+    ScrollPane s1 = new ScrollPane(v1);
+    s1.setFitToWidth(true); // Ensures the content width adjusts to the ScrollPane width
+    s1.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show horizontal scrollbar as needed
+    s1.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show vertical scrollbar as needed
+    s1.setPadding(new Insets(60,0,0,20));
+    
+    return s1;
+}
+
+   private Node appointmentScheduling() {
+    Font f1 = new Font("Helvetica", 20);
+    
+    Label upidLabel = new Label("Select UPID: ");
+    ComboBox<Integer> upidComboBox = new ComboBox<>();
+
+    
+    for (int i = 1; i <= count; i++) {
+        upidComboBox.getItems().add(i);
+    }
+    
+    // Headings
+    Text heading1 = new Text("APPOINTMENT BOOKING");
+    heading1.setFont(f1);
+    heading1.setUnderline(true);
+    heading1.setFill(Color.BLACK);
+    
+    Text heading2 = new Text("APPOINTMENT MANAGEMENT");
+    heading2.setFont(f1);
+    heading2.setUnderline(true);
+    heading2.setFill(Color.BLACK);
+    
+    // Labels
+    Label l1 = new Label("Doctor Selection : ");
+    Label l2 = new Label("Date : ");
+    Label l3 = new Label("Time : ");
+    Label l4 = new Label("Appointments : ");
+    
+    // Form Fields
+    DatePicker date = new DatePicker();
+    ComboBox<String> doctor = new ComboBox<>();
+    ComboBox<String> time = new ComboBox<>();
+    
+    Button book = new Button("Book");
+    
+    ListView<String> appointments = new ListView<>();
+    
+    Button edit = new Button("Edit");
+    Button cancel = new Button("Cancel");
+    
+    // Load dynamic data
+    try {
+    s1 = new sql();
+    
+    // Load doctors into the ComboBox
+    List<String> doctorNames = s1.getDoctors();
+    doctor.getItems().addAll(doctorNames);
+    
+    // Load times into the ComboBox
+    time.getItems().addAll("10:00 AM", "11:00 AM", "12:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "07:00 PM", "08:00 PM", "09:00 PM");
+
+    // Load existing appointments into the ListView
+    appointments.getItems().addAll(s1.getAppointments());
+
+    // Set action for the "Book" button
+    book.setOnAction(e -> {
+        try {
+            String selectedDoctorName = doctor.getValue().split("-")[0];
+            try{
+            s1.appointAndInvoice(upidComboBox.getValue(), selectedDoctorName);
+            }catch(Exception e5){}
+            
+            
+            
+            
+            // Get the selected doctor name
+            
+            if (selectedDoctorName == null || time.getValue() == null || date.getValue() == null) {
+                // Handle case where not all fields are selected
+                System.out.println("Please fill all fields.");
+                return;
+            }
+
+            // Fetch doctor ID from doctor name
+            int doctorId = s1.getDoctorIdByName(selectedDoctorName);
+            
+            // Book the appointment
+            s1.bookAppointment(doctorId, "Patient Name", date.getValue().toString(), time.getValue()); // Replace "Patient Name" with actual patient name input
+            appointments.getItems().add(selectedDoctorName + " - " + time.getValue());
+            
+            Alert a = new Alert(Alert.AlertType.INFORMATION, "Booking Confirmed");
+            a.show();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    });
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+    
+    // Layouts
+    GridPane g1 = new GridPane();
+    g1.add(heading1, 0, 0, 2, 1);
+    g1.add(l1, 0, 1);
+    g1.add(doctor, 1, 1);
+    g1.add(l2, 0, 2);
+    g1.add(date, 1, 2);
+    g1.add(l3, 0, 3);
+    g1.add(time, 1, 3);
+    
+    GridPane g2 = new GridPane();
+    g2.add(heading2, 0, 0, 2, 1);
+    g2.add(l4, 0, 1);
+    g2.add(appointments, 1, 1);
+    
+    HBox h1 = new HBox();
+    h1.getChildren().add(g1);
+    h1.setPadding(new Insets(0,250,0,0));
+    
+    HBox h2 = new HBox();
+    h2.getChildren().add(g2);
+    
+    HBox h3 = new HBox();
+    h3.getChildren().addAll(edit, cancel);
+    h3.setSpacing(7);
+    h3.setPadding(new Insets(0, 0, 0, 150));
+    
+    HBox h4 = new HBox();
+    h4.getChildren().addAll(upidLabel,upidComboBox);
+    h4.setSpacing(10);
+    
+    VBox v1 = new VBox();
+    v1.getChildren().addAll(h4,h1, book, h2, h3);
+    v1.setAlignment(Pos.CENTER);
+    v1.setSpacing(15);
+    v1.setPadding(new Insets(0, 0, 0, 250));
+    
+    ScrollPane s1 = new ScrollPane(v1);
+    s1.setFitToWidth(true); // Ensures the content width adjusts to the ScrollPane width
+    s1.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show horizontal scrollbar as needed
+    s1.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show vertical scrollbar as needed
+    
+    return s1;
+}
+
+
+   private Node electronicHealthRecords() {
+    Font f1 = new Font("Helvetica", 20);
+
+    // Headings
+    Text heading1 = new Text("PATIENT DETAILS");
+    heading1.setFont(f1);
+    heading1.setUnderline(true);
+    heading1.setFill(Color.BLACK);
+
+    Text heading2 = new Text("MEDICAL HISTORY");
+    heading2.setFont(f1);
+    heading2.setUnderline(true);
+    heading2.setFill(Color.BLACK);
+
+    Text heading3 = new Text("VITAL SIGNS");
+    heading3.setFont(f1);
+    heading3.setUnderline(true);
+    heading3.setFill(Color.BLACK);
+
+    Text heading4 = new Text("PROGRESS NOTES");
+    heading4.setFont(f1);
+    heading4.setUnderline(true);
+    heading4.setFill(Color.BLACK);
+
+    // Patient Details Labels
+    Label Name = new Label("Name: ");
+    Label Date = new Label("Date of Birth: ");
+    Label Gender = new Label("Gender: ");
+    Label Contact = new Label("Contact Information: ");
+    
+    TextField NAME = new TextField();
+    NAME.setEditable(false);
+    TextField DOB = new TextField();
+    DOB.setEditable(false);
+    TextField GENDER = new TextField();
+    GENDER.setEditable(false);
+    TextArea CONTACT = new TextArea();
+    CONTACT.setPrefRowCount(1);
+    CONTACT.setEditable(false);
+
+    // Medical History
+    TextArea medicalHistory = new TextArea();
+    medicalHistory.setEditable(false);
+
+    // Vital Signs
+    Label temp = new Label("Temperature: ");
+    Label bp = new Label("Blood Pressure: ");
+    Label heartrate = new Label("Heart Rate: ");
+    TextField temperature = new TextField();
+    TextField bloodPressure = new TextField();
+    TextField heartRate = new TextField();
+    
+    
+
+    // Progress Notes
+    TextArea progressNotes = new TextArea();
+    progressNotes.setEditable(true);
+    progressNotes.setPrefRowCount(3);
+
+    // UPID ComboBox
+    Label upidLabel = new Label("Select UPID: ");
+    ComboBox<Integer> upidComboBox = new ComboBox<>();
+
+    
+    for (int i = 1; i <= count; i++) {
+        upidComboBox.getItems().add(i);
+    }
+
+    upidComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+    if (newValue != null) {
+        try {
+            s1 = new sql();
+            List<Object> l1 = s1.upIdComboBox((int) newValue); // Ensure `newValue` is an integer ID
+            if (s1.isIdInHRecords((int) newValue)) {
+                NAME.setText(l1.get(0).toString());
+                DOB.setText(l1.get(1).toString());
+                GENDER.setText(l1.get(2).toString());
+                CONTACT.setText(l1.get(3).toString() + ", " + l1.get(4).toString());
+                medicalHistory.setText(l1.get(8).toString() + "\nInsurance Provider: " + l1.get(9).toString()
+                        + "\nInsurance Number: " + l1.get(10).toString());
+                temperature.setText(l1.get(11).toString()); // Note the index shift
+                bloodPressure.setText(l1.get(12).toString());
+                heartRate.setText(l1.get(13).toString());
+                progressNotes.setText(l1.get(14).toString());
+            } else {
+                NAME.setText(l1.get(0).toString());
+                DOB.setText(l1.get(1).toString());
+                GENDER.setText(l1.get(2).toString());
+                CONTACT.setText(l1.get(3).toString() + ", " + l1.get(4).toString());
+                medicalHistory.setText(l1.get(8).toString() + "\nInsurance Provider: " + l1.get(9).toString()
+                        + "\nInsurance Number: " + l1.get(10).toString());
+                // Clear or hide fields that are not available
+                temperature.setText("");
+                bloodPressure.setText("");
+                heartRate.setText("");
+                progressNotes.setText("");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+});
+
+
+    
+    Button submit = new Button("Submit");
+    submit.setOnAction(e -> {
+    try {
+        Integer selectedUpid = upidComboBox.getValue();
+        
+        if (selectedUpid != null) {
+            // Call the method with the selected UPID
+            s1.hRecords(
+                selectedUpid.intValue(),
+                temperature.getText(),
+                bloodPressure.getText(),
+                heartRate.getText(),
+                progressNotes.getText()
+            );
+            
+            // Show success alert
+            Alert a = new Alert(Alert.AlertType.INFORMATION, "Updated Successfully");
+            a.show();
+            
+            // Clear the fields
+            upidComboBox.setValue(null);
+            temperature.setText("");
+            bloodPressure.setText("");
+            heartRate.setText("");
+            progressNotes.setText("");
+        } else {
+            // Handle case where UPID is null
+            Alert a = new Alert(Alert.AlertType.WARNING, "Please select a UPID.");
+            a.show();
+        }
+    } catch (Exception e1) {
+        // Log or show error message
+        Alert a = new Alert(Alert.AlertType.ERROR, "An error occurred: " + e1.getMessage());
+        a.show();
+        e1.printStackTrace(); // Optionally print the stack trace for debugging
+    }
+});
+
+
+    // Layouts
+    GridPane g1 = new GridPane();
+    g1.add(Name, 0, 0);
+    g1.add(NAME, 1, 0);
+    g1.add(Date, 0, 1);
+    g1.add(DOB, 1, 1);
+    g1.add(Gender, 0, 2);
+    g1.add(GENDER, 1, 2);
+    g1.add(Contact, 0, 3);
+    g1.add(CONTACT, 1, 3);
+
+    GridPane g2 = new GridPane();
+    g2.add(temp, 0, 0);
+    g2.add(temperature, 1, 0);
+    g2.add(bp, 0, 1);
+    g2.add(bloodPressure, 1, 1);
+    g2.add(heartrate, 0, 2);
+    g2.add(heartRate, 1, 2);
+
+    GridPane g3 = new GridPane();
+    g3.add(progressNotes, 0, 0);
+
+    GridPane g4 = new GridPane();
+    g4.add(medicalHistory, 0, 0);
+    
+    GridPane g5 = new GridPane();
+    g5.add(upidLabel, 0, 0);
+    g5.add(upidComboBox, 1, 0);
+    g5.setPadding(new Insets(0, 0, 0, 175));
+
+    VBox v1 = new VBox();
+    v1.getChildren().addAll(g5, heading1, g1, heading2, g4, heading3, g2, heading4, g3);
+    v1.setSpacing(15);
+    v1.setAlignment(Pos.CENTER);
+    v1.setPadding(new Insets(0, 0, 0, 100));
+    
+    VBox v2 = new VBox();
+    v2.getChildren().addAll(v1,submit);
+    v2.setAlignment(Pos.CENTER);
+    v2.setPadding(new Insets(0, 0, 0, 50));
+
+    ScrollPane s1 = new ScrollPane(v2);
+    s1.setFitToWidth(true); // Ensures the content width adjusts to the ScrollPane width
+    s1.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show horizontal scrollbar as needed
+    s1.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show vertical scrollbar as needed
+
+    return s1;
+}
+
+
+   
+   private Node billingAndInvoice(){
+    Font f1 = new Font("Helvetica", 20);
+    
+    Label upidLabel = new Label("Select UPID: ");
+    ComboBox<Integer> upidComboBox = new ComboBox<>();
+
+    
+    for (int i = 1; i <= count; i++) {
+        upidComboBox.getItems().add(i);
+    }
+    
+    Text heading1 = new Text("PATIENT DETAILS"); heading1.setFont(f1); heading1.setUnderline(true); heading1.setFill(Color.BLACK);
+    Text heading2 = new Text("INVOICE DETAILS"); heading2.setFont(f1); heading2.setUnderline(true); heading2.setFill(Color.BLACK);
+    Text heading4 = new Text("TOTAL AMOUNT"); heading4.setFont(f1); heading4.setUnderline(true); heading4.setFill(Color.BLACK);
+    
+
+    Label Name = new Label("Name: " );
+    Label Date = new Label("Date of Birth: " );
+    Label Gender = new Label("Gender: " );
+    Label Contact = new Label("Contact Information: ");
+    
+    TextField NAME = new TextField();
+    NAME.setEditable(false);
+    TextField DOB = new TextField();
+    DOB.setEditable(false);
+    TextField GENDER = new TextField();
+    GENDER.setEditable(false);
+    TextArea CONTACT = new TextArea();
+    CONTACT.setPrefRowCount(1);
+    CONTACT.setEditable(false);
+
+    Label InvoiceNumber = new Label("Invoice Number: ");
+    Label DateIssued = new Label("Date: " );
+    Label DueDate = new Label("Due Date: ");
+    
+    TextField INVOICENUMBER = new TextField();
+    INVOICENUMBER.setEditable(false);
+    TextField DATEISSUED = new TextField();
+    DATEISSUED.setEditable(false);
+    TextField DUEDATE = new TextField();
+    DUEDATE.setEditable(false);
+    
+    Label TotalAmount = new Label("Total Amount Due: ");
+    TextField TOTALAMOUNT = new TextField();
+    TOTALAMOUNT.setEditable(false);
+    
+    upidComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+        
+        
+        try {
+            List<Object> l1 = s1.upIdComboBox((int) newValue);
+            NAME.setText(l1.get(0).toString());
+            DOB.setText(l1.get(1).toString());
+            GENDER.setText(l1.get(2).toString());
+            CONTACT.setText(l1.get(3).toString() + ", " + l1.get(4).toString());
+            
+            INVOICENUMBER.setText("INV000" + upidComboBox.getValue());
+            DATEISSUED.setText(s1.returnDob(upidComboBox.getValue()));
+            
+            String dateString = s1.returnDob(upidComboBox.getValue());
+
+        // Define the formatter for parsing and formatting the date
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+        // Parse the date string to a LocalDate object
+        LocalDate date = LocalDate.parse(dateString, formatter);
+
+        // Add one day to the date
+        LocalDate nextDate = date.plusDays(1);
+
+        // Format the new date to a string
+        String nextDateString = nextDate.format(formatter);
+
+        // Set the next date to the text
+        DUEDATE.setText(nextDateString);
+        DUEDATE.setStyle("-fx-background-color: red;");
+        TOTALAMOUNT.setText(s1.returnDueAmount(upidComboBox.getValue()));
+        TOTALAMOUNT.setStyle("-fx-background-color: lightgreen;");
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+    });
+    
+    
+    
+    GridPane g1 = new GridPane();
+    g1.add(Name, 0, 0);
+    g1.add(NAME, 1, 0);
+    g1.add(Date, 0, 1);
+    g1.add(DOB, 1, 1);
+    g1.add(Gender, 0, 2);
+    g1.add(GENDER, 1, 2);
+    g1.add(Contact, 0, 3);
+    g1.add(CONTACT, 1, 3);
+
+    GridPane g2 = new GridPane();
+    g2.add(InvoiceNumber, 0, 0);
+    g2.add(INVOICENUMBER, 1, 0);
+    g2.add(DateIssued, 0, 1);
+    g2.add(DATEISSUED, 1, 1);
+    g2.add(DueDate, 0, 2);
+    g2.add(DUEDATE, 1, 2);
+
+  
+
+    GridPane g4 = new GridPane();
+    g4.add(TotalAmount, 0, 0);
+    g4.add(TOTALAMOUNT, 1, 0);
+    
+    HBox h1 = new HBox();
+    h1.getChildren().addAll(upidLabel,upidComboBox);
+    h1.setSpacing(10);
+    h1.setAlignment(Pos.CENTER);
+
+    VBox v1 = new VBox();
+    v1.getChildren().addAll(h1,heading1, g1, heading2, g2, heading4, g4);
+    v1.setSpacing(15);
+    v1.setAlignment(Pos.CENTER);
+    v1.setPadding(new Insets(0, 0, 0, 100));
+    
+    ScrollPane s1 = new ScrollPane(v1);
+    s1.setFitToWidth(true); // Ensures the content width adjusts to the ScrollPane width
+    s1.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show horizontal scrollbar as needed
+    s1.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show vertical scrollbar as needed
+    s1.setPadding(new Insets(100,0,0,0));
+    
+    return s1;
+}
+   
+   private Node inventoryManagement(){
+       
+    
+
+       
+    Font f1 = new Font("Helvetica", 20);
+    Text heading1 = new Text("ITEM LIST"); heading1.setFont(f1); heading1.setUnderline(true); heading1.setFill(Color.BLACK);
+    Text heading2 = new Text("ADD NEW ITEM"); heading2.setFont(f1); heading2.setUnderline(true); heading2.setFill(Color.BLACK);
+    Text heading3 = new Text("INVENTORY ACTIONS"); heading3.setFont(f1); heading3.setUnderline(true); heading3.setFill(Color.BLACK);
+    
+    ListView<String> itemList = new ListView<>(); // add columns and data from database
+    itemList.setPrefHeight(Region.USE_COMPUTED_SIZE); // Allows the ListView to resize based on content
+
+    
+    Label itemNameLabel = new Label("Item Name: ");
+    Label quantityLabel = new Label("Quantity: ");
+    Label statusLabel = new Label("Status: ");
+    
+    TextField itemNameField = new TextField();
+    TextField quantityField = new TextField();
+    ComboBox<String> statusComboBox = new ComboBox<>();
+    statusComboBox.getItems().addAll("In Stock","Out Of Stock","Low Stock");
+    
+    Button addItemButton = new Button("Add Item");
+    Button updateItemButton = new Button("Update Item");
+    Button deleteItemButton = new Button("Delete Item");
+    
+    try {
+        List<String> items = s1.inventory();
+        itemList.getItems().clear(); // Clear existing items
+        itemList.getItems().addAll(items); // Add new items
+    } catch (Exception e) {
+        e.printStackTrace(); // Log the exception
+        Alert a = new Alert(Alert.AlertType.ERROR, "An error occurred while updating the item list.");
+        a.show();
+    }
+    
+    
+    
+    addItemButton.setOnAction(e1 -> {
+    String itemName = itemNameField.getText();
+    String quantity = quantityField.getText();
+    String status = statusComboBox.getValue();
+
+    if (itemName.isEmpty() || quantity.isEmpty() || status == null) {
+        Alert a = new Alert(Alert.AlertType.WARNING,"Invalid Input");
+        a.show();
+        return;
+    }
+
+    try {
+        s1 = new sql();
+        s1.inventoryUpdate(itemName, quantity, status);
+        try {
+        List<String> items = s1.inventory();
+        itemList.getItems().clear(); // Clear existing items
+        itemList.getItems().addAll(items); // Add new items
+    } catch (Exception e) {
+        e.printStackTrace(); // Log the exception
+        Alert a = new Alert(Alert.AlertType.ERROR, "An error occurred while updating the item list.");
+        a.show();
+    }// Refresh the ListView with updated data
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,"Success");
+        a.show();
+    } catch (Exception e0) {
+        e0.printStackTrace();
+        Alert a = new Alert(Alert.AlertType.WARNING,"Error");
+        a.show();
+    } finally {
+        if (s1 != null) {
+            s1.close();
+        }
+    }
+});
+
+deleteItemButton.setOnAction(e2 -> {
+    try {
+        s1 = new sql();
+        s1.inventoryDelete();
+        try {
+        List<String> items = s1.inventory();
+        itemList.getItems().clear(); // Clear existing items
+        itemList.getItems().addAll(items); // Add new items
+    } catch (Exception e) {
+        e.printStackTrace(); // Log the exception
+        Alert a = new Alert(Alert.AlertType.ERROR, "An error occurred while updating the item list.");
+        a.show();
+    }// Refresh the ListView with updated data
+        Alert a = new Alert(Alert.AlertType.INFORMATION,"Success");
+        a.show();
+    } catch (Exception e1) {
+        e1.printStackTrace();
+        Alert a = new Alert(Alert.AlertType.ERROR,"ERROR");
+        a.show();
+    } finally {
+        if (s1 != null) {
+            s1.close();
+        }
+    }
+});
+
+    
+    
+    
+    
+
+    HBox h1 = new HBox();
+    h1.getChildren().add(itemList);
+    h1.setAlignment(Pos.CENTER);
+
+//    GridPane g1 = new GridPane();
+//    g1.add(itemList, 1, 0);
+    
+    GridPane g2 = new GridPane();
+    g2.add(itemNameLabel, 0, 0);
+    g2.add(itemNameField, 1, 0);
+    g2.add(quantityLabel, 0, 1);
+    g2.add(quantityField, 1, 1);
+    g2.add(statusLabel, 0, 2);
+    g2.add(statusComboBox, 1, 2);
+
+    GridPane g3 = new GridPane();
+    g3.add(addItemButton, 0, 0);
+    g3.add(updateItemButton, 1, 0);
+    g3.add(deleteItemButton, 2, 0);
+
+    VBox v1 = new VBox();
+    v1.getChildren().addAll(heading1, h1, heading2, g2, heading3, g3);
+    v1.setSpacing(15);
+    v1.setAlignment(Pos.CENTER);
+    v1.setPadding(new Insets(0, 0, 200, 100));
+    
+    ScrollPane s1 = new ScrollPane(v1);
+    s1.setFitToWidth(true); // Ensures the content width adjusts to the ScrollPane width
+    s1.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show horizontal scrollbar as needed
+    s1.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show vertical scrollbar as needed
+    s1.setPadding(new Insets(100,0,0,0));
+    
+    return s1;
+}
+   
+   
+
+public class sql {
+    String currentUser = "";
+    private Connection con;
+    private Statement stm;
+    private PreparedStatement stm1;
+
+    // Constructor
+    public sql() throws Exception {
+        try {
+            // Establishing the connection
+            con = DriverManager.getConnection("jdbc:sqlite:c://sqlite//patientRegistration.db");
+            stm = con.createStatement();
+
+            // Enabling foreign key support
+            String enableForeignKeys = "PRAGMA foreign_keys = ON;";
+            stm.execute(enableForeignKeys);
+
+            // Create the patients table
+            String patientRegistrationTable = "CREATE TABLE IF NOT EXISTS patients ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "name TEXT NOT NULL, "
+                + "dateOfBirth TEXT, "
+                + "gender TEXT, "
+                + "phoneNumber TEXT, "  // Consider using TEXT for phone numbers
+                + "email TEXT, "
+                + "houseNo TEXT, "
+                + "state TEXT, "
+                + "country TEXT, "
+                + "medicalHistory TEXT, "
+                + "insuranceProvider TEXT, "  // Corrected the spelling
+                + "insuranceNumber TEXT"
+                + ");";
+
+            // Create the hRecords table
+            String electronicHealthRecord = "CREATE TABLE IF NOT EXISTS hRecords ("
+                + "id INTEGER, "  // Reference to patients(id)
+                + "temperature TEXT, "
+                + "bloodPressure TEXT, "
+                + "heartRate TEXT, "
+                + "progressNotes TEXT, "
+                + "FOREIGN KEY(id) REFERENCES patients(id)"
+                + ");";
+            
+            String appointmentScheduling = "CREATE TABLE IF NOT EXISTS doctors (\n" +
+                                          "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                                          "    name TEXT NOT NULL,\n" +
+                                          "    specialty TEXT,\n" +
+                                          "    phoneNumber TEXT,\n" +
+                                          "    email TEXT,\n" +
+                                          "    availability TEXT\n" +
+                                          ");";
+            String appointmentScheduling1 = "CREATE TABLE IF NOT EXISTS appointments (\n" +
+                                            "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                                            "    doctorId INTEGER,\n" +
+                                            "    patientName TEXT,\n" +
+                                            "    appointmentDate TEXT,\n" +
+                                            "    appointmentTime TEXT,\n" +
+                                            "    status TEXT,\n" +
+                                            "    FOREIGN KEY(doctorId) REFERENCES doctors(id)\n" +
+                                            ");";
+            
+            String inventory = "create table if not exists inventory(itemName TEXT, quantity TEXT,status TEXT )";
+            
+            String login = "create table if not exists login(username TEXT unique ,password TEXT)";
+            // Execute the table creation statements
+            stm.executeUpdate(patientRegistrationTable);
+            stm.executeUpdate(electronicHealthRecord);
+            stm.executeUpdate(appointmentScheduling);
+            stm.executeUpdate(appointmentScheduling1);
+            stm.executeUpdate(inventory);
+            stm.executeUpdate(login);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e; // Rethrow or handle the exception as needed
+        }
+    }
+
+    // Ensure resources are released
+    public void close() {
+        try {
+            if (stm != null) stm.close();
+            if (con != null) con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void login(String username,String pass) throws Exception{
+        stm1=con.prepareStatement("insert into login values(?,?)");
+        stm1.setString(1, username);
+        stm1.setString(2, pass);
+        stm1.executeUpdate();
+    }
+    
+    public boolean loginCheck(String login,String pass) throws Exception{
+        stm1 = con.prepareStatement("select * from login where username = ?");
+        stm1.setString(1, login);
+        ResultSet rs = stm1.executeQuery();
+        if(rs != null){
+            if(pass.equals(rs.getString(2))){
+                currentUser = currentUser + login;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public String returnUsername(){
+        return currentUser;
+    }
+
+    public void register(Integer id,String name,String date,String gender,String phnNum,String email,String hNo,String state,String country,String medHist,String insProv,String insNum) throws Exception{
+       stm1 = con.prepareStatement("insert into patients values(?,?,?,?,?,?,?,?,?,?,?,?)");
+       stm1.setInt(1, id);
+       stm1.setString(2, name);
+       stm1.setString(3, date);
+       stm1.setString(4, gender);
+       stm1.setString(5, phnNum);
+       stm1.setString(6, email);
+       stm1.setString(7, hNo);
+       stm1.setString(8, state);
+       stm1.setString(9, country);
+       stm1.setString(10, medHist);
+       stm1.setString(11, insProv);
+       stm1.setString(12, insNum);
+       
+       stm1.executeUpdate();
+       
+   };
+   
+    public List<Object> upIdComboBox(int value) throws Exception {
+    List<Object> values = new ArrayList<>();
+    String query;
+    if(isIdInHRecords(value)) {
+        query = "SELECT p.*, hr.temperature, hr.bloodPressure, hr.heartRate, hr.progressNotes FROM patients p JOIN hRecords hr ON p.id = hr.id WHERE p.id = ?;";
+    } else {
+        query = "SELECT * FROM patients p WHERE p.id = ?;";
+    }
+
+    try (PreparedStatement stm1 = con.prepareStatement(query)) {
+        stm1.setInt(1, value);
+        try (ResultSet rs = stm1.executeQuery()) {
+            if (rs.next()) {
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int columnCount = rsmd.getColumnCount();
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = rsmd.getColumnName(i);
+                    // Skip the 'id' column if needed
+                    if (!columnName.equalsIgnoreCase("id")) {
+                        Object value1 = rs.getObject(i);
+                        values.add(value1);
+                    }
+                }
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw e; // Rethrow or handle exception as needed
+    }
+
+    return values;
+}
+
+
+    public boolean isIdInHRecords(int id) throws Exception {
+    String query = "SELECT 1 FROM hRecords WHERE id = ? LIMIT 1;";
+    try (PreparedStatement stm = con.prepareStatement(query)) {
+        stm.setInt(1, id);
+        try (ResultSet rs = stm.executeQuery()) {
+            return rs.next(); // Returns true if the id is found, false otherwise
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw e; // Rethrow or handle exception as needed
+    }
+}
+
+    
+    
+    public int maxID() throws Exception {
+    int maxId = 0; // Default value in case of an empty table
+    String query = "SELECT MAX(id) FROM patients";
+    
+    try (PreparedStatement stm = con.prepareStatement(query);
+         ResultSet rs = stm.executeQuery()) {
+        
+        if (rs.next()) {
+            maxId = rs.getInt(1);
+            // Handle cases where the table might be empty
+            if (rs.wasNull()) {
+                maxId = 0; // Or any other appropriate default value
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw e; // Rethrow or handle exception as needed
+    }
+    
+    return maxId;
+}
+
+    
+    public void hRecords(int id,String temp,String bp,String heartRate,String notes) throws Exception{
+        stm1 = con.prepareStatement("insert into hRecords values(?,?,?,?,?)");
+        stm1.setInt(1, id);
+        stm1.setString(2, temp);
+        stm1.setString(3, bp);
+        stm1.setString(4, heartRate);
+        stm1.setString(5, notes);
+        
+        stm1.executeUpdate();
+    }
+    
+    public List<String> getAppointments() throws SQLException {
+    List<String> appointments = new ArrayList<>();
+    String query = "SELECT d.name AS doctor, a.appointmentTime AS time " +
+                   "FROM appointments a " +
+                   "JOIN doctors d ON a.doctorId = d.id";
+    ResultSet rs = stm.executeQuery(query);
+    while (rs.next()) {
+        appointments.add(rs.getString("doctor") + " - " + rs.getString("time"));
+    }
+    return appointments;
+}
+
+
+    // Method to book an appointment
+    public void bookAppointment(int doctorId, String patientName, String date, String time) throws SQLException {
+    String query = "INSERT INTO appointments (doctorId, patientName, appointmentDate, appointmentTime, status) VALUES (?, ?, ?, ?, ?)";
+    PreparedStatement pstmt = con.prepareStatement(query);
+    pstmt.setInt(1, doctorId);
+    pstmt.setString(2, patientName);
+    pstmt.setString(3, date);
+    pstmt.setString(4, time);
+    pstmt.setString(5, "Scheduled"); // Default status
+    pstmt.executeUpdate();
+}
+
+    
+public List<String> getDoctors() throws SQLException {
+    List<String> doctors = new ArrayList<>();
+    String query = "SELECT * FROM doctors"; // Assuming a doctors table
+    ResultSet rs = stm.executeQuery(query);
+    while (rs.next()) {
+        doctors.add(rs.getString("name" ) +"-" + rs.getString("specialty" ).toUpperCase()+"(" + rs.getString("availability" )+")" +" " + rs.getString("phoneNumber" )+"-" + rs.getString("email" ) + "-" + "Rs. "+ rs.getString("fees"));
+
+    }
+    return doctors;
+}
+    
+    public int getDoctorIdByName(String name) throws SQLException {
+    String query = "SELECT id FROM doctors WHERE name = ?";
+    PreparedStatement pstmt = con.prepareStatement(query);
+    pstmt.setString(1, name);
+    ResultSet rs = pstmt.executeQuery();
+    if (rs.next()) {
+        return rs.getInt("id");
+    }
+    throw new SQLException("Doctor not found");
+    }
+    
+    
+    public void appointAndInvoice(int upid,String name) throws Exception{
+        String query1 = "select fees from doctors where name = ?";
+        String query2 = "update patients set fees = ? where id = ?";
+        
+        
+        stm1 = con.prepareStatement(query1);
+        stm1.setString(1, name);
+        ResultSet rs = stm1.executeQuery();
+        
+        stm1 = con.prepareStatement(query2);
+        stm1.setInt(1, rs.getInt(1));
+        stm1.setInt(2, upid);
+        stm1.executeUpdate();
+        
+    }
+    
+    public String returnDob(int id) throws Exception{
+        stm1 = con.prepareStatement("select dateOfBirth from patients where id = ?");
+        stm1.setInt(1, id);
+        ResultSet rs = stm1.executeQuery();
+        return rs.getString(1);
+        
+    }
+    
+    public String returnDueAmount(int id) throws Exception{
+        stm1 = con.prepareStatement("select fees from patients where id = ?");
+        stm1.setInt(1, id);
+        ResultSet rs = stm1.executeQuery();
+        return rs.getString(1);
+    }
+    
+    public void inventoryUpdate(String item, String quantity, String status) throws Exception {
+    String query = "INSERT INTO inventory (itemName, quantity, status) VALUES (?, ?, ?)";
+    try (PreparedStatement stm1 = con.prepareStatement(query)) {
+        stm1.setString(1, item);
+        stm1.setString(2, quantity);
+        stm1.setString(3, status);
+        stm1.executeUpdate();
+    }
+}
+
+    
+    public List<String> inventory() throws Exception {
+    List<String> items = new ArrayList<>();
+    String query = "SELECT * FROM inventory";
+    try (Statement stm = con.createStatement(); ResultSet rs = stm.executeQuery(query)) {
+        while (rs.next()) {
+            items.add(rs.getString("itemName")); // Adjust column as needed
+        }
+    }
+    return items;
+}
+
+    
+    public void inventoryDelete() throws Exception {
+    String query = "DELETE FROM inventory WHERE status = 'Out Of Stock'";
+    try (Statement stm = con.createStatement()) {
+        stm.executeUpdate(query);
+    }
+}
+
+
+
+
+
+
+    public static void main(String[] args) throws Exception {
+        Class.forName("org.sqlite.JDBC");
+        launch(args);
+    }
+}
+}
