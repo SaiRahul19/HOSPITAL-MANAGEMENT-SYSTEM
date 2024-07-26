@@ -15,6 +15,15 @@
 ### Project : Hospital Management System
 
 ![Screenshot 2024-07-26 123129](https://github.com/user-attachments/assets/7420a287-f30e-4270-96b8-5dd995f1b7c3)
+![Screenshot 2024-07-26 123217](https://github.com/user-attachments/assets/63ab418e-5797-4dc3-a14a-a2ef46ff5c9d)  
+![Screenshot 2024-07-26 123236](https://github.com/user-attachments/assets/9dce2ae6-f043-4f74-b982-d8e5a60dd10a)
+![Screenshot 2024-07-26 123304](https://github.com/user-attachments/assets/0c5288cc-4b57-4739-842e-31ccfa9d34c7)
+![Screenshot 2024-07-26 123334](https://github.com/user-attachments/assets/5470d32c-23da-485c-9f50-b6f985c5174d)  
+![Screenshot 2024-07-26 123415](https://github.com/user-attachments/assets/e810a59a-bc2d-495c-a00b-bb5a8951b1be)
+
+
+
+
 
 
 
