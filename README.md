@@ -1,9 +1,5 @@
-# CODETECH---Task-1 
+# Hospital Management System
 **Name** : Gogikar Sai Rahul  
-
-**Company** : CODETECH IT SOLUTIONS  
-
-**ID** : CT6WDS899  
 
 **Domain** : JAVA PROGRAMMING  
 
